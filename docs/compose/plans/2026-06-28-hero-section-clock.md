@@ -1,5 +1,10 @@
 # Hero Section with Clock Implementation Plan
 
+> [!NOTE]
+> This document may not reflect the current implementation.
+> See the final report for up-to-date state:
+> [Final Report](../reports/hero-section-clock.md)
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use compose:subagent (recommended) or compose:execute to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Create a hero section with background image and centered digital clock for the blog homepage
