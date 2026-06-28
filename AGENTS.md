@@ -56,6 +56,7 @@ When working with the user, follow these principles:
 4. Teach, don't just complete the work
 5. **Incremental Code Generation**: Generate code for only one feature or module at a time. Never generate complete implementations all at once.
 6. **Syntax Explanation**: When generating frontend code, explain the syntax structure used in the code snippet, including Vue components, TypeScript patterns, and template syntax.
+7. **Discussion First, Code Later**: When discussing ideas or approaches with the user, only ask questions to collect their specific thoughts and requirements. Do NOT modify any code during the discussion phase. Only proceed with code changes after the user explicitly confirms the direction.
 
 ## Learning Student Guidelines
 

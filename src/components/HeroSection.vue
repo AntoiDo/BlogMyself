@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import summerBG from '@/assets/images/summerBG.jpg'
 
 
@@ -14,6 +14,8 @@ const updateTime = () => {
   const seconds = String(now.getSeconds()).padStart(2, '0')
   currentTime.value = `${hours}:${minutes}:${seconds}`
 }
+
+const characters = computed(() => currentTime.value.split(''))
 
 onMounted(() => {
   updateTime()
@@ -31,7 +33,15 @@ onUnmounted(() => {
   <div class="hero-section">
     <div class="hero-background" :style="{ backgroundImage: `url(${summerBG})` }"></div>
     <div class="hero-content">
-      <div class="clock">{{ currentTime }}</div>
+      <div class="clock">
+        <span
+          v-for="(char, index) in characters"
+          :key="`${index}-${char}`"
+          class="clock-char"
+          :class="{ 'is-separator': char === ':' }"
+          :style="{ animationDelay: `${0.8 + index * 0.05}s` }"
+        >{{ char }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -80,13 +90,27 @@ onUnmounted(() => {
 
 .clock {
   font-size: 4rem;
-  font-family: 'Courier New', monospace;
-  color: #8BC3E2;
+  font-family: "Cormorant Garamond","Times New Roman",serif;
+  color: #F5F2E8;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.2rem;
-  animation: clockAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.8s forwards;
+  display: flex;
+  gap: 0;
+}
+
+.clock-char {
+  display: inline-block;
   opacity: 0;
-  transform: scale(0.9);
+  transform: translateY(20px);
+  animation: charSlideIn 0.5s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+.clock-char.is-separator {
+  animation-name: separatorPulse;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-delay: 1.5s;
 }
 
 /* 背景从模糊到清晰动画 */
@@ -113,19 +137,25 @@ onUnmounted(() => {
   }
 }
 
-/* 时钟出现动画 - Apple风格弹性效果 */
-@keyframes clockAppear {
+/* 逐字符从下方滑入 */
+@keyframes charSlideIn {
   0% {
     opacity: 0;
-    transform: scale(0.9);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
+    transform: translateY(20px);
   }
   100% {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
+  }
+}
+
+/* 冒号呼吸脉动 */
+@keyframes separatorPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
   }
 }
 
@@ -133,7 +163,7 @@ onUnmounted(() => {
 @media (prefers-reduced-motion: reduce) {
   .hero-section::before,
   .hero-background,
-  .clock {
+  .clock-char {
     animation: none;
     opacity: 1;
     filter: none;
