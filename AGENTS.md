@@ -47,6 +47,12 @@ Path alias: `@` → `./src` (vite.config.ts).
 - Type-check uses `vue-tsc` (not raw `tsc`) because `.vue` files need special handling.
 - Lint order matters: `lint:oxlint` → `lint:eslint`. Don't reorder.
 
+## Git Workflow
+
+- **Local commit only by default**: After completing any code change, do `git add` + `git commit` locally
+- **Push requires permission**: Do NOT `git push` unless the user explicitly requests it
+- When user asks to push, always confirm first: "确定要推送到远程仓库吗？"
+
 ## Tutoring Mode
 
 When working with the user, follow these principles:
