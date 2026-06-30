@@ -1,10 +1,43 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
 import HeroSection from '@/components/HeroSection.vue'
+import MainContent from '@/components/MainContent.vue'
+
+const progress = ref(0)
+
+let ticking = false
+
+const handleScroll = () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      progress.value = Math.min(window.scrollY / window.innerHeight, 1)
+      ticking = false
+    })
+    ticking = true
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <template>
   <div id="app">
+    <div
+      class="overlay"
+      :style="{
+        backdropFilter: `blur(${progress * 8}px)`,
+        WebkitBackdropFilter: `blur(${progress * 8}px)`,
+        backgroundColor: `rgba(255, 249, 244, ${progress * 0.85})`,
+      }"
+    ></div>
     <HeroSection />
+    <MainContent />
   </div>
 </template>
 
@@ -12,5 +45,15 @@ import HeroSection from '@/components/HeroSection.vue'
 #app {
   margin: 0;
   padding: 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 </style>
