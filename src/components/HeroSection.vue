@@ -36,7 +36,7 @@ onUnmounted(() => {
       <div class="clock">
         <span
           v-for="(char, index) in characters"
-          :key="`${index}-${char}`"
+          :key="`${index}`"
           class="clock-char"
           :class="{ 'is-separator': char === ':' }"
           :style="{ animationDelay: `${0.8 + index * 0.05}s` }"
@@ -153,9 +153,11 @@ onUnmounted(() => {
 @keyframes separatorPulse {
   0%, 100% {
     opacity: 1;
+    transform: translateY(0);
   }
   50% {
     opacity: 0.3;
+    transform: translateY(0);
   }
 }
 
