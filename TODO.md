@@ -17,8 +17,9 @@
 
 ## Bug修复
 
-- [ ] **文字边框动画只播放一次**：HeroSection 时钟字符的入场动画（charSlideIn）在第一次进入时播放，但回滚到顶部再下滑时不再触发
+- [x] **文字边框动画只播放一次**：HeroSection 时钟字符的入场动画（charSlideIn）在第一次进入时播放，但回滚到顶部再下滑时不再触发
   - 文件：`src/components/HeroSection.vue`、`src/components/MainContent.vue`
   - 原因：Intersection Observer 只在 isIntersecting 时触发一次，缺少"离开后重置"逻辑
-  - 状态：待修复
+  - 状态：已修复
   - 优先级：高
+  - 完成时间：2026-06-30
