@@ -10,9 +10,7 @@ onMounted(() => {
   observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          isVisible.value = true
-        }
+        isVisible.value = entry.isIntersecting
       })
     },
     { threshold: 0.1 }
