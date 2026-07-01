@@ -60,7 +60,7 @@ onUnmounted(() => {
           :key="`${index}`"
           class="clock-char"
           :class="{ 'is-separator': char === ':' }"
-          :style="{ animationDelay: `${0.8 + index * 0.05}s` }"
+          :style="{ animationDelay: `${0.3 + index * 0.05}s` }"
         >{{ char }}</span>
       </div>
     </div>
