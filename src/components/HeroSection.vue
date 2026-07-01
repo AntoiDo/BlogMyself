@@ -7,6 +7,11 @@ import summerBG from '@/assets/images/summerBG.jpg'
 const currentTime = ref('')
 let timer: number | null = null
 
+const clockRef = ref<HTMLElement | null>(null)
+const isAnimating = ref(false)
+
+let observer: IntersectionObserver | null = null
+
 const updateTime = () => {
   const now = new Date()
   const hours = String(now.getHours()).padStart(2, '0')
@@ -20,11 +25,27 @@ const characters = computed(() => currentTime.value.split(''))
 onMounted(() => {
   updateTime()
   timer = window.setInterval(updateTime, 1000)
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        isAnimating.value = entry.isIntersecting
+      })
+    },
+    { threshold: 0.3 }
+  )
+
+  if (clockRef.value) {
+    observer.observe(clockRef.value)
+  }
 })
 
 onUnmounted(() => {
   if (timer) {
     clearInterval(timer)
+  }
+  if (observer) {
+    observer.disconnect()
   }
 })
 </script>
@@ -33,7 +54,7 @@ onUnmounted(() => {
   <div class="hero-section">
     <div class="hero-background" :style="{ backgroundImage: `url(${summerBG})` }"></div>
     <div class="hero-content">
-      <div class="clock">
+      <div class="clock" ref="clockRef" :class="{ 'is-animating': isAnimating }">
         <span
           v-for="(char, index) in characters"
           :key="`${index}`"
@@ -53,11 +74,10 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow: hidden;
 }
 
 .hero-background {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -65,6 +85,7 @@ onUnmounted(() => {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  z-index: -1;
   animation: blurToClear 0.8s ease-out forwards;
   filter: blur(20px);
   transform: scale(1.1);
@@ -77,9 +98,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.15);
-  animation: fadeInOverlay 2s ease-out forwards;
-  opacity: 0;
+  background: transparent;
 }
 
 .hero-content {
@@ -102,10 +121,13 @@ onUnmounted(() => {
   display: inline-block;
   opacity: 0;
   transform: translateY(20px);
+}
+
+.clock.is-animating .clock-char {
   animation: charSlideIn 0.5s cubic-bezier(0.33, 1, 0.68, 1) forwards;
 }
 
-.clock-char.is-separator {
+.clock.is-animating .clock-char.is-separator {
   animation-name: separatorPulse;
   animation-duration: 2s;
   animation-timing-function: ease-in-out;
@@ -123,16 +145,6 @@ onUnmounted(() => {
   100% {
     filter: blur(0px);
     transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* 浅白色遮罩淡入动画 */
-@keyframes fadeInOverlay {
-  0% {
-    opacity: 0;
-  }
-  100% {
     opacity: 1;
   }
 }
@@ -163,7 +175,6 @@ onUnmounted(() => {
 
 /* 支持减少动画的用户偏好 */
 @media (prefers-reduced-motion: reduce) {
-  .hero-section::before,
   .hero-background,
   .clock-char {
     animation: none;
