@@ -3,7 +3,7 @@ import HeroSection from '@/components/HeroSection.vue'
 import MainContent from '@/components/MainContent.vue'
 import { useScrollTransition } from '@/composables/useScrollTransition'
 
-const { progress } = useScrollTransition()
+const { currentProgress } = useScrollTransition()
 </script>
 
 <template>
@@ -11,14 +11,14 @@ const { progress } = useScrollTransition()
     <div
       class="overlay"
       :style="{
-        backdropFilter: `blur(${progress * 8}px)`,
-        WebkitBackdropFilter: `blur(${progress * 8}px)`,
-        backgroundColor: `rgba(255, 249, 244, ${progress * 0.85})`,
+        backdropFilter: `blur(${currentProgress * 8}px)`,
+        WebkitBackdropFilter: `blur(${currentProgress * 8}px)`,
+        backgroundColor: `rgba(255, 249, 244, ${currentProgress * 0.85})`,
       }"
     ></div>
     <div
       class="content-layer"
-      :style="{ transform: `translateY(${-progress * 100}vh)` }"
+      :style="{ transform: `translateY(${-currentProgress * 100}vh)` }"
     >
       <HeroSection />
       <MainContent />
