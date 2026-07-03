@@ -1,32 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
 import HeroSection from '@/components/HeroSection.vue'
 import MainContent from '@/components/MainContent.vue'
 import { useScrollTransition } from '@/composables/useScrollTransition'
 
-useScrollTransition()
-
-const progress = ref(0)
-
-let ticking = false
-
-const handleScroll = () => {
-  if (!ticking) {
-    requestAnimationFrame(() => {
-      progress.value = Math.min(window.scrollY / window.innerHeight, 1)
-      ticking = false
-    })
-    ticking = true
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
+const { progress } = useScrollTransition()
 </script>
 
 <template>

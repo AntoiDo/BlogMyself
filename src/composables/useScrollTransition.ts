@@ -1,9 +1,11 @@
-import { onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const progress = ref(0)
 
 export function useScrollTransition() {
   const handleWheel = (e: WheelEvent) => {
     e.preventDefault()
-    console.log('deltaY:', e.deltaY)
+    progress.value = Math.max(0, Math.min(1, progress.value + e.deltaY * 0.001))
   }
 
   onMounted(() => {
@@ -15,4 +17,6 @@ export function useScrollTransition() {
     document.documentElement.style.overflow = ''
     window.removeEventListener('wheel', handleWheel)
   })
+
+  return { progress }
 }
