@@ -6,8 +6,11 @@ const velocity = ref(0)
 
 const stiffness = 0.08
 const damping = 0.85
+const threshold = 0.5
+const idleTimeout = 400
 
 let animFrameId: number | null = null
+let idleTimer: number | null = null
 
 const tick = () => {
   velocity.value += (targetProgress.value - currentProgress.value) * stiffness
@@ -20,7 +23,13 @@ export function useScrollTransition() {
   const handleWheel = (e: WheelEvent) => {
     e.preventDefault()
     targetProgress.value = Math.max(0, Math.min(1, targetProgress.value + e.deltaY * 0.001))
-    console.log('target:', targetProgress.value, 'current:', currentProgress.value)
+
+    if (idleTimer) clearTimeout(idleTimer)
+    idleTimer = window.setTimeout(() => {
+      if (targetProgress.value < threshold) {
+        targetProgress.value = 0
+      }
+    }, idleTimeout)
   }
 
   onMounted(() => {
@@ -33,6 +42,7 @@ export function useScrollTransition() {
     document.documentElement.style.overflow = ''
     window.removeEventListener('wheel', handleWheel)
     if (animFrameId) cancelAnimationFrame(animFrameId)
+    if (idleTimer) clearTimeout(idleTimer)
   })
 
   return { targetProgress, currentProgress, velocity }
