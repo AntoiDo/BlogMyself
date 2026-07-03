@@ -16,8 +16,13 @@ const { progress } = useScrollTransition()
         backgroundColor: `rgba(255, 249, 244, ${progress * 0.85})`,
       }"
     ></div>
-    <HeroSection />
-    <MainContent />
+    <div
+      class="scroll-container"
+      :style="{ transform: `translateY(${-progress * 100}vh)` }"
+    >
+      <HeroSection />
+      <MainContent />
+    </div>
   </div>
 </template>
 
@@ -25,6 +30,8 @@ const { progress } = useScrollTransition()
 #app {
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  height: 100vh;
 }
 
 .overlay {
@@ -35,5 +42,9 @@ const { progress } = useScrollTransition()
   bottom: 0;
   z-index: 0;
   pointer-events: none;
+}
+
+.scroll-container {
+  will-change: transform;
 }
 </style>
