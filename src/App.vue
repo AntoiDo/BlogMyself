@@ -2,6 +2,9 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import HeroSection from '@/components/HeroSection.vue'
 import MainContent from '@/components/MainContent.vue'
+import { useScrollTransition } from '@/composables/useScrollTransition'
+
+useScrollTransition()
 
 const progress = ref(0)
 
