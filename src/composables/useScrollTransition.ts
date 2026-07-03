@@ -6,7 +6,7 @@ const velocity = ref(0)
 
 const stiffness = 0.08
 const damping = 0.85
-const threshold = 0.5
+const threshold = 0.6
 const idleTimeout = 400
 
 let animFrameId: number | null = null
@@ -26,7 +26,9 @@ export function useScrollTransition() {
 
     if (idleTimer) clearTimeout(idleTimer)
     idleTimer = window.setTimeout(() => {
-      if (targetProgress.value < threshold) {
+      if (targetProgress.value >= threshold) {
+        targetProgress.value = 1
+      } else {
         targetProgress.value = 0
       }
     }, idleTimeout)
