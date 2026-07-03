@@ -6,6 +6,7 @@ export function useScrollTransition() {
   const handleWheel = (e: WheelEvent) => {
     e.preventDefault()
     progress.value = Math.max(0, Math.min(1, progress.value + e.deltaY * 0.001))
+    console.log('progress:', progress.value)
   }
 
   onMounted(() => {
