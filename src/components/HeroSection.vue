@@ -1,8 +1,5 @@
 <script setup lang="ts">
-
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import summerBG from '@/assets/images/summerBG.jpg'
-
 
 const currentTime = ref('')
 let timer: number | null = null
@@ -52,7 +49,6 @@ onUnmounted(() => {
 
 <template>
   <div class="hero-section">
-    <div class="hero-background" :style="{ backgroundImage: `url(${summerBG})` }"></div>
     <div class="hero-content">
       <div class="clock" ref="clockRef" :class="{ 'is-animating': isAnimating }">
         <span
@@ -76,21 +72,6 @@ onUnmounted(() => {
   position: relative;
 }
 
-.hero-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: -1;
-  animation: blurToClear 0.8s ease-out forwards;
-  filter: blur(20px);
-  transform: scale(1.1);
-}
-
 .hero-section::before {
   content: '';
   position: absolute;
@@ -109,7 +90,7 @@ onUnmounted(() => {
 
 .clock {
   font-size: 4rem;
-  font-family: "Cormorant Garamond","Times New Roman",serif;
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
   color: #F5F2E8;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.2rem;
@@ -135,21 +116,6 @@ onUnmounted(() => {
   animation-delay: 1.5s;
 }
 
-/* 背景从模糊到清晰动画 */
-@keyframes blurToClear {
-  0% {
-    filter: blur(20px);
-    transform: scale(1.1);
-    opacity: 0;
-  }
-  100% {
-    filter: blur(0px);
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* 逐字符从下方滑入 */
 @keyframes charSlideIn {
   0% {
     opacity: 0;
@@ -161,7 +127,6 @@ onUnmounted(() => {
   }
 }
 
-/* 冒号呼吸脉动 */
 @keyframes separatorPulse {
   0%, 100% {
     opacity: 1;
@@ -173,13 +138,10 @@ onUnmounted(() => {
   }
 }
 
-/* 支持减少动画的用户偏好 */
 @media (prefers-reduced-motion: reduce) {
-  .hero-background,
   .clock-char {
     animation: none;
     opacity: 1;
-    filter: none;
     transform: none;
   }
 }
