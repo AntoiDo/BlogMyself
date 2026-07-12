@@ -10,6 +10,9 @@ export function useDampedScroll() {
   // 是否正在执行切换动画
   const isTransitioning = ref(false)
 
+  // 检测用户是否开启减少动画
+  const prefersReducedMotion = ref(false)
+
   // 内部状态
   let accumulatedDelta = 0
   let decayTimer: number | null = null
@@ -22,6 +25,17 @@ export function useDampedScroll() {
   let decayAnimationId: number | null = null
   let decayStartValue = 0
   let decayStartTime = 0
+
+  // 检测减少动画偏好
+  const checkReducedMotion = () => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    prefersReducedMotion.value = mediaQuery.matches
+
+    // 监听变化
+    mediaQuery.addEventListener('change', (e) => {
+      prefersReducedMotion.value = e.matches
+    })
+  }
 
   // 处理滚轮事件
   const handleWheel = (e: WheelEvent) => {
@@ -36,10 +50,10 @@ export function useDampedScroll() {
     // 限制最大拖拽范围
     const maxDelta = window.innerHeight * MAX_DRAG_RATIO
     if (currentSection.value === 'hero') {
-      // 向下滚动限制
+      // 向下滚动限制（禁止向上）
       accumulatedDelta = Math.max(0, Math.min(accumulatedDelta, maxDelta))
     } else {
-      // 向上滚动限制（负值）
+      // 向上滚动限制（禁止向下）
       accumulatedDelta = Math.min(0, Math.max(accumulatedDelta, -maxDelta))
     }
 
@@ -70,6 +84,13 @@ export function useDampedScroll() {
 
   // 开始衰减动画
   const startDecay = () => {
+    // 如果开启减少动画，直接重置
+    if (prefersReducedMotion.value) {
+      accumulatedDelta = 0
+      scrollProgress.value = 0
+      return
+    }
+
     decayStartValue = accumulatedDelta
     decayStartTime = performance.now()
 
@@ -120,17 +141,21 @@ export function useDampedScroll() {
       decayAnimationId = null
     }
 
-    // 执行切换动画（700ms）
+    // 根据动画偏好决定切换时长
+    const duration = prefersReducedMotion.value ? 0 : 700
+
+    // 执行切换动画
     setTimeout(() => {
       currentSection.value = target
       accumulatedDelta = 0
       scrollProgress.value = 0
       isTransitioning.value = false
-    }, 700)
+    }, duration)
   }
 
   // 生命周期
   onMounted(() => {
+    checkReducedMotion()
     window.addEventListener('wheel', handleWheel, { passive: false })
   })
 
@@ -147,6 +172,7 @@ export function useDampedScroll() {
   return {
     currentSection,
     scrollProgress,
-    isTransitioning
+    isTransitioning,
+    prefersReducedMotion
   }
 }
