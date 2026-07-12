@@ -18,6 +18,20 @@ watch(isTransitioning, (newVal) => {
   }
 })
 
+// 计算 Overlay 遮罩进度（0-1）
+const overlayProgress = computed(() => {
+  const maxDelta = window.innerHeight * 0.35 // MAX_DRAG_RATIO
+  // 只在时钟页向下滚动时显示遮罩
+  if (currentSection.value === 'hero' && scrollProgress.value > 0) {
+    return Math.min(scrollProgress.value / maxDelta, 1)
+  }
+  // 在 MainContent 区域，向上滚动时也显示遮罩
+  if (currentSection.value === 'main' && scrollProgress.value < 0) {
+    return Math.min(Math.abs(scrollProgress.value) / maxDelta, 1)
+  }
+  return 0
+})
+
 // 计算页面滑动位置（使用 px 单位）
 const pageTransform = computed(() => {
   const viewportHeight = window.innerHeight
@@ -55,7 +69,7 @@ const pageTransition = computed(() => {
 <template>
   <div id="app">
     <BackgroundLayer />
-    <OverlayLayer />
+    <OverlayLayer :scroll-progress="overlayProgress * 100" />
     <div
       class="page-container"
       :style="{

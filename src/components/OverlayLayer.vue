@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { useScrollProgress } from '@/composables/useScrollProgress'
+interface Props {
+  scrollProgress: number
+}
 
-const { progress } = useScrollProgress()
+const props = withDefaults(defineProps<Props>(), {
+  scrollProgress: 0
+})
 </script>
 
 <template>
   <div
     class="overlay"
     :style="{
-      backdropFilter: `blur(${progress * 8}px)`,
-      WebkitBackdropFilter: `blur(${progress * 8}px)`,
-      backgroundColor: `rgba(255, 249, 244, ${progress * 0.85})`,
+      backdropFilter: `blur(${props.scrollProgress * 0.08}px)`,
+      WebkitBackdropFilter: `blur(${props.scrollProgress * 0.08}px)`,
+      backgroundColor: `rgba(255, 249, 244, ${props.scrollProgress * 0.0085})`,
     }"
   ></div>
 </template>
