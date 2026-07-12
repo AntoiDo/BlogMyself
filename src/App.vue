@@ -4,19 +4,39 @@ import OverlayLayer from '@/components/OverlayLayer.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import MainContent from '@/components/MainContent.vue'
 import { useDampedScroll } from '@/composables/useDampedScroll'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const { currentSection, scrollProgress, isTransitioning } = useDampedScroll()
 
-// 计算页面滑动位置
+// 记录切换前的滚动方向
+const transitionDirection = ref<'down' | 'up'>('down')
+
+// 监听切换开始，记录方向
+watch(isTransitioning, (newVal) => {
+  if (newVal) {
+    transitionDirection.value = currentSection.value === 'hero' ? 'down' : 'up'
+  }
+})
+
+// 计算页面滑动位置（使用 px 单位）
 const pageTransform = computed(() => {
-  if (currentSection.value === 'main') {
-    // 已经在 MainContent 区域
-    if (isTransitioning.value) {
-      // 正在切换，执行滑动动画
-      return `translateY(-100vh)`
+  const viewportHeight = window.innerHeight
+
+  if (isTransitioning.value) {
+    // 正在切换动画中
+    if (transitionDirection.value === 'down') {
+      // 向下切换到 MainContent
+      return `translateY(-${viewportHeight}px)`
+    } else {
+      // 向上切换回时钟页
+      return 'translateY(0)'
     }
-    return `translateY(-100vh)`
+  }
+
+  if (currentSection.value === 'main') {
+    // 已经在 MainContent 区域，向上滚动时跟随
+    // scrollProgress 是负值
+    return `translateY(-${viewportHeight + scrollProgress.value}px)`
   }
 
   // 在时钟页，根据滚动进度移动
