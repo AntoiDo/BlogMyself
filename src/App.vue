@@ -21,14 +21,34 @@ watch(isTransitioning, (newVal) => {
 // 计算 Overlay 遮罩进度（0-1）
 const overlayProgress = computed(() => {
   const maxDelta = window.innerHeight * 0.35 // MAX_DRAG_RATIO
-  // 只在时钟页向下滚动时显示遮罩
+
+  // 正在切换动画中
+  if (isTransitioning.value) {
+    if (transitionDirection.value === 'down') {
+      // 向下切换到 MainContent：遮罩保持最大
+      return 1
+    } else {
+      // 向上切换回时钟页：遮罩从当前值逐渐消失
+      // 使用 scrollProgress 计算，因为此时 scrollProgress 还没被重置
+      return Math.min(Math.abs(scrollProgress.value) / maxDelta, 1)
+    }
+  }
+
+  // 在时钟页：遮罩跟随向下滚动进度
   if (currentSection.value === 'hero' && scrollProgress.value > 0) {
     return Math.min(scrollProgress.value / maxDelta, 1)
   }
-  // 在 MainContent 区域，向上滚动时也显示遮罩
-  if (currentSection.value === 'main' && scrollProgress.value < 0) {
-    return Math.min(Math.abs(scrollProgress.value) / maxDelta, 1)
+
+  // 在 MainContent 区域：遮罩 = 1 - 向上滚动进度
+  if (currentSection.value === 'main') {
+    if (scrollProgress.value < 0) {
+      // 向上滚动时，遮罩逐渐减弱
+      return 1 - Math.min(Math.abs(scrollProgress.value) / maxDelta, 1)
+    }
+    // 没有滚动时，保持最大遮罩
+    return 1
   }
+
   return 0
 })
 
